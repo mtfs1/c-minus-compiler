@@ -1,0 +1,6 @@
+# output executable
+compiler
+
+# object files
+*.o
+
