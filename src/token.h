@@ -1,3 +1,6 @@
+#include <stdlib.h>
+
+
 #ifndef TOKEN
 #define TOKEN
 
@@ -5,6 +8,7 @@ struct Token {
   int type;
   int line_number;
   int char_number;
+  size_t val;
 };
 
 #define TOK_ELSE 1

@@ -4,6 +4,7 @@
 #include "lexer.h"
 #include "token.h"
 #include "trie.h"
+#include "string_table.h"
 
 
 int char_to_index(char ch) {
@@ -69,7 +70,9 @@ int final_state_to_token_type(int state) {
   return tokens[state];
 }
 
-struct Token parse_token(struct Buffer *input_file) {
+struct Token parse_token(struct Buffer *input_file,
+     struct StringTable *string_table) {
+
   char lexeme_buffer[32];
   int next_char_in_buffer = 0;
 
@@ -212,10 +215,22 @@ struct Token parse_token(struct Buffer *input_file) {
       if(trie_ptr->lex)
         token_type = trie_ptr->lex;
 
+      size_t val = 0;
+      if(token_type == 26) {
+        lexeme_buffer[next_char_in_buffer] = '\0';
+        val = (size_t)insert_string(lexeme_buffer, string_table);
+      }
+
+      if(token_type == 27) {
+        lexeme_buffer[next_char_in_buffer] = '\0';
+        val = atoi(lexeme_buffer);
+      }
+
       struct Token tok = {
         .type = token_type,
         .char_number = char_pos,
-        .line_number = line
+        .line_number = line,
+        .val = val
       };
 
       return tok;
