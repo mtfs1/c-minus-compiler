@@ -1,9 +1,7 @@
 %{
 #include "token.h"
 #include "lexer.h"
-
-int yylex();
-int yyerror(const char *s);
+#include "parser.h"
 
 struct Buffer *buffer = NULL;
 struct StringTable *string_table = NULL;
