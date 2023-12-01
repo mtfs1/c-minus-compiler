@@ -1,6 +1,10 @@
 #include <stdio.h>
 
 #include "buffered_read.h"
+#include "lexer.h"
+#include "string_table.h"
+
+int parser(struct Buffer *buffer_arg, struct StringTable *string_table_arg);
 
 
 int main(int argc, char **argv) {
@@ -18,6 +22,23 @@ int main(int argc, char **argv) {
   }
 
   struct Buffer file_buffer = allocate_buffer(fp);
+  struct StringTable *string_table = allocate_string_table();
+
+  /*
+  while(!file_buffer.is_eof) {
+    struct Token tok = parse_token(&file_buffer, string_table);
+    if(tok.type == 26) {
+      printf("token type %d identifier: %s\n", tok.type, (char*)tok.val);
+      continue;
+    }
+    if(tok.type == 27) {
+      printf("token type %d number: %d\n", tok.type, (int)tok.val);
+      continue;
+    }
+    printf("token type %d\n", tok.type);
+  }
+  */
+  parser(&file_buffer, string_table);
 
   return 0;
 }
