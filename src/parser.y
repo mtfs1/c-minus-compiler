@@ -55,15 +55,15 @@ declaration: var-declaration
              | fun-declaration
              ;
 
-var-declaration: type-specifier IDENTIFIER ';'
-                  | type-specifier IDENTIFIER '[' NUMBER ']' ';'
+var-declaration: type-specifier id ';'
+                  | type-specifier id '[' num ']' ';'
                   ;
 
 type-specifier: INT
                 | VOID
                 ;
 
-fun-declaration: type-specifier IDENTIFIER '(' params ')' composed-declaration
+fun-declaration: type-specifier id '(' params ')' composed-declaration
 
 params: param-list
         | VOID
@@ -73,8 +73,8 @@ param-list: param-list ',' param
             | param
             ;
 
-param: type-specifier IDENTIFIER
-       | type-specifier IDENTIFIER '[' ']'
+param: type-specifier id
+       | type-specifier id '[' ']'
        ;
 
 composed-declaration: '{' local-declarations statement-list '}'
@@ -112,8 +112,8 @@ expression: var '=' expression
             | simple-expression
             ;
 
-var: IDENTIFIER
-     | IDENTIFIER '[' expression ']'
+var: id
+     | id '[' expression ']'
      ;
 
 simple-expression: sum-expression relational sum-expression
@@ -147,10 +147,10 @@ multiplication: '*'
 factor: '(' expression ')'
         | var
         | activation
-        | NUMBER
+        | num
         ;
 
-activation: IDENTIFIER '(' args ')'
+activation: id '(' args ')'
 
 args: arg-list
       | %empty
@@ -159,6 +159,10 @@ args: arg-list
 arg-list: arg-list ',' expression
           | expression
           ;
+
+id: IDENTIFIER
+
+num: NUMBER
 
 %%
 
