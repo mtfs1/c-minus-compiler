@@ -19,6 +19,7 @@ int yyerror(const char *s);
 node *get(int type);
 node *bin_op(node *n1, node *op, node *n2);
 node *app(node *list, node *n);
+node *capp(node *list, node *n);
 node *new_ter_node(int type, node *n1, node *n2, node *n3);
 node *new_quat_node(int type, node *n1, node *n2, node *n3, node *n4);
 
@@ -48,4 +49,5 @@ node *new_quat_node(int type, node *n1, node *n2, node *n3, node *n4);
 #define N_FNDCL 24
 #define N_VOID 25
 #define N_INT 26
+#define N_PAR 27
 

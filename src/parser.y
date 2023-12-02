@@ -58,21 +58,18 @@ decl: var-decl                { $$ = $1; }
       ;
 
 var-decl: type-spec id ';'            { $$ = get(N_DCL); bin_op($1, $$, $2); }
-          | type-spec id'['num']' ';' { $$ = new_ter_node(N_ADCL, $1, $2, $3); }
+          | type-spec id'['num']' ';' { $$ = new_ter_node(N_ADCL, $1, $2, $4); }
           ;
 
 type-spec: INT                { $$ = get(N_INT); }
            | VOID             { $$ = get(N_VOID); }
            ;
 
-fun-decl: type-spec id '(' params ')' composed-decl
-  { $$ = new_quat_node(N_FNDCL, $1, $2, $3, $4); }
+fun-decl: type-spec id '(' params ')' cmp-decl
+  { $$ = new_quat_node(N_FNDCL, $1, $2, $4, $6); }
 
-params: param-list            { $$ = $1; }
-        | VOID                { $$ = NULL; }
-        ;
-
-param-list: param-list ',' param      { $$ = app($1, $2); }
+params: param-list            { $$ = get(N_PAR); $$->c = $1; }
+        | VOID                { $$ = get(N_PAR); } ; param-list: param-list ',' param      { $$ = app($1, $3); }
             | param                   { $$ = $1; }
             ;
 
@@ -80,42 +77,42 @@ param: type-spec id           { $$ = get(N_DCL); bin_op($1, $$, $2); }
        | type-spec id '[' ']' { $$ = get(N_ADCL); bin_op($1, $$, $2); }
        ;
 
-composed-decl: '{'local-decls stmt-list'}'  { $$ = get(N_CPD); $$ = app($1, $2); }
+cmp-decl: '{'local-decls stmt-list'}'  { $$ = get(N_CPD); $$->c = capp($2, $3); }
 
-local-decls: local-decls var-decl           { $$ = app($1, $2); }
-             | %empty                       { $$ = NULL; }
+local-decls: local-decls var-decl      { $$ = capp($1, $2); }
+             | %empty                  { $$ = NULL; }
              ;
 
-stmt-list: stmt-list stmt     { $$ = app($1, $2); }
+stmt-list: stmt-list stmt     { $$ = capp($1, $2); }
            | %empty           { $$ = NULL; }
            ;
 
 stmt: expr-decl               { $$ = $1; }
-      | composed-decl         { $$ = $1; }
+      | cmp-decl              { $$ = $1; }
       | if-decl               { $$ = $1; }
       | while-decl            { $$ = $1; }
-      | return-decl           { $$ = $1; printf("[STMT][%p]\n", $1); }
+      | return-decl           { $$ = $1; }
       ;
 
 expr-decl: expr ';'           { $$ = $1; }
            | ';'              { $$ = NULL; }
            ;
 
-if-decl: IF '('expr')' stmt               { $$ = get(N_IF); bin_op($1, $$, $2); }
-         | IF '('expr')' stmt ELSE stmt   { printf("%p %p %p\n", $1, $2, $3); $$ = new_ter_node(N_IF, $1, $2, $3); }
+if-decl: IF '('expr')' stmt               { $$ = get(N_IF); bin_op($3, $$, $5); }
+         | IF '('expr')' stmt ELSE stmt   { $$ = new_ter_node(N_IF, $3, $5, $7); }
 
 while-decl: WHILE '('expr')' stmt         { $$ = get(N_WHL); bin_op($1, $$, $2); }
 
 return-decl: RETURN ';'          { $$ = get(N_RET); }
-             | RETURN expr ';'   { $$ = get(N_RET); $$->c = $1; printf("[RET][%p %p]\n", $$, $1); }
+             | RETURN expr ';'   { $$ = get(N_RET); $$->c = $2; }
              ;
 
-expr: var '=' expr            { $$ = get(N_ATR); bin_op($1, $$, $2); }
-      | simple-expr           { $$ = $1; printf("[EXPR][%p %p]\n", $$, $1); }
+expr: var '=' expr            { $$ = get(N_ATR); bin_op($1, $$, $3); }
+      | simple-expr           { $$ = $1; }
       ;
 
 var: id                       { $$ = $1; }
-     | id '[' expr ']'        { $$ = get(N_IDX); bin_op($1, $$, $2); }
+     | id '[' expr ']'        { $$ = get(N_IDX); bin_op($1, $$, $3); }
      ;
 
 simple-expr: sum-expr relational sum-expr   { $$ = bin_op($1, $2, $3); }
@@ -146,19 +143,19 @@ mult: '*'                     { $$ = get(N_MULT); }
       | '/'                   { $$ = get(N_DIV); }
       ;
 
-factor: '(' expr ')'          { $$ = $1; }
+factor: '(' expr ')'          { $$ = $2; }
         | var                 { $$ = $1; }
         | activation          { $$ = $1; }
         | num                 { $$ = $1; }
         ;
 
-activation: id '(' args ')'   { $$ = get(N_ACTV); bin_op($1, $$, $2); }
+activation: id '(' args ')'   { $$ = get(N_ACTV); bin_op($1, $$, $3); }
 
 args: arg-list                { $$ = get(N_ARGS); $$->c = $1; }
-      | %empty                { $$ = NULL; }
+      | %empty                { $$ = get(N_ARGS); }
       ;
 
-arg-list: arg-list ',' expr   { $$ = app($1, $2); }
+arg-list: arg-list ',' expr   { $$ = app($1, $3); }
           | expr              { $$ = $1; }
           ;
 
