@@ -1,4 +1,5 @@
 #include "parser.h"
+#include <stdlib.h>
 
 
 node *get(int type) {
@@ -48,3 +49,16 @@ node *new_quat_node(int type, node *n1, node *n2, node *n3, node *n4) {
 
   return parent;
 }
+
+struct Scope *get_scope_node(int start_line, int start_char,
+     int end_line, int end_char) {
+
+  struct Scope *scope = (struct Scope *)malloc(sizeof(struct Scope));
+  scope->start_line = start_line;
+  scope->start_char = start_char;
+  scope->end_line = end_line;
+  scope->end_char = end_char;
+
+  return scope;
+}
+

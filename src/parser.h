@@ -8,6 +8,13 @@ typedef struct ASTNode {
   struct ASTNode *c;
 } node;
 
+typedef struct Scope {
+  int start_line;
+  int start_char;
+  int end_line;
+  int end_char;
+} Scope;
+
 #define YYPARSER
 #define YYSTYPE node*
 
@@ -22,6 +29,9 @@ node *app(node *list, node *n);
 node *capp(node *list, node *n);
 node *new_ter_node(int type, node *n1, node *n2, node *n3);
 node *new_quat_node(int type, node *n1, node *n2, node *n3, node *n4);
+
+struct Scope *get_scope_node(int start_line, int start_char,
+  int end_line, int end_char);
 
 #define N_ID 1
 #define N_NUM 2

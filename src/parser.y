@@ -11,7 +11,9 @@ struct StringTable *string_table = NULL;
 int line_num = 0;
 int char_num = 0;
 size_t val = 0;
-node *last = NULL;
+
+int scope_stack[100] = {0};
+int scope_sp = 0;
 
 %}
 
@@ -80,7 +82,8 @@ param: type-spec id           { $$ = get(N_DCL); bin_op($1, $$, $2); }
        | type-spec id '[' ']' { $$ = get(N_ADCL); bin_op($1, $$, $2); }
        ;
 
-cmp-decl: '{'local-decls stmt-list'}'  { $$ = get(N_CPD); $$->c = capp($2, $3); }
+cmp-decl: '{'local-decls stmt-list'}'
+  { $$ = get(N_CPD); $$->c = capp($2, $3); $$->val = $4->val; }
 
 local-decls: local-decls var-decl      { $$ = capp($1, $2); }
              | %empty                  { $$ = NULL; }
@@ -220,9 +223,20 @@ int yylex() {
       return ']';
 
     case TOK_OPEN_CURLY_BRACKET:
+      scope_stack[scope_sp] = line_num;
+      scope_stack[scope_sp + 1] = char_num;
+      scope_sp += 2;
+
       return '{';
 
     case TOK_CLOSE_CURLY_BRACKET:
+      scope_sp -= 2;
+      struct Scope *n = get_scope_node(scope_stack[scope_sp],
+        scope_stack[scope_sp + 1], line_num, char_num);
+
+      yylval = get(0);
+      yylval->val = (size_t)n;
+
       return '}';
 
   }
