@@ -15,6 +15,8 @@ size_t val = 0;
 int scope_stack[100] = {0};
 int scope_sp = 0;
 
+node *root;
+
 %}
 
 %token ELSE 257
@@ -49,7 +51,7 @@ int scope_sp = 0;
 
 %%
 
-program: decl-list            { $$ = $1; }
+program: decl-list            { root = $1; }
 
 decl-list: decl-list decl     { $$ = app($1, $2); }
            | decl             { $$ = $1; }
@@ -244,10 +246,11 @@ int yylex() {
   return tok.type + 256;
 }
 
-int parser(struct Buffer *buffer_arg, struct StringTable *string_table_arg) {
+node *parser(struct Buffer *buffer_arg, struct StringTable *string_table_arg) {
   buffer = buffer_arg;
   string_table = string_table_arg;
   yyparse();
+  return root;
 }
 
 int yyerror(const char *s) {

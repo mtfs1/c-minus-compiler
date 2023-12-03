@@ -1,5 +1,10 @@
 #include <stdlib.h>
 
+#include "buffered_read.h"
+
+
+#ifndef PARSER
+#define PARSER
 
 typedef struct ASTNode {
   int type;
@@ -17,6 +22,8 @@ typedef struct Scope {
 
 #define YYPARSER
 #define YYSTYPE node*
+
+node *parser(struct Buffer *buffer_arg, struct StringTable *string_table_arg);
 
 int yylex();
 int yyerror(const char *s);
@@ -60,4 +67,6 @@ struct Scope *get_scope_node(int start_line, int start_char,
 #define N_VOID 25
 #define N_INT 26
 #define N_PAR 27
+
+#endif
 
