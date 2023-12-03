@@ -69,7 +69,10 @@ fun-decl: type-spec id '(' params ')' cmp-decl
   { $$ = new_quat_node(N_FNDCL, $1, $2, $4, $6); }
 
 params: param-list            { $$ = get(N_PAR); $$->c = $1; }
-        | VOID                { $$ = get(N_PAR); } ; param-list: param-list ',' param      { $$ = app($1, $3); }
+        | VOID                { $$ = get(N_PAR); }
+        ;
+
+param-list: param-list ',' param      { $$ = app($1, $3); }
             | param                   { $$ = $1; }
             ;
 
