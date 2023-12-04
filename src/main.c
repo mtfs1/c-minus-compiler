@@ -4,6 +4,7 @@
 #include "lexer.h"
 #include "string_table.h"
 #include "parser.h"
+#include "semantic.h"
 
 
 int main(int argc, char **argv) {
@@ -24,6 +25,8 @@ int main(int argc, char **argv) {
   struct StringTable *string_table = allocate_string_table();
 
   struct ASTNode *ast = parser(&file_buffer, string_table);
+
+  struct SymbolTable *symbol_table = new_symbol_table();
 
   return 0;
 }

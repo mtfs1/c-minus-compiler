@@ -19,6 +19,7 @@ struct StringTable {
 struct HashTableNode *allocate_hash_table_node(char *string);
 struct StringTable *allocate_string_table();
 char *insert_string(char *str, struct StringTable *string_table);
+int hash(char *str);
 
 #endif
 
