@@ -10,6 +10,7 @@ typedef struct ASTNode {
 
 #define YYPARSER
 #define YYSTYPE node*
+#define INDENT_SIZE 2
 
 int yylex();
 int yyerror(const char *s);
@@ -22,6 +23,7 @@ node *app(node *list, node *n);
 node *capp(node *list, node *n);
 node *new_ter_node(int type, node *n1, node *n2, node *n3);
 node *new_quat_node(int type, node *n1, node *n2, node *n3, node *n4);
+void printTable();
 
 #define N_ID 1
 #define N_NUM 2

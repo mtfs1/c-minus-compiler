@@ -2,9 +2,10 @@
 
 #include "buffered_read.h"
 #include "lexer.h"
+#include "parser.h"
 #include "string_table.h"
 
-int parser(struct Buffer *buffer_arg, struct StringTable *string_table_arg);
+node* parser(struct Buffer *buffer_arg, struct StringTable *string_table_arg);
 
 
 int main(int argc, char **argv) {
@@ -23,6 +24,7 @@ int main(int argc, char **argv) {
 
   struct Buffer file_buffer = allocate_buffer(fp);
   struct StringTable *string_table = allocate_string_table();
+  node *tree;
 
   /*
   while(!file_buffer.is_eof) {
@@ -38,7 +40,10 @@ int main(int argc, char **argv) {
     printf("token type %d\n", tok.type);
   }
   */
-  parser(&file_buffer, string_table);
+  tree = parser(&file_buffer, string_table);
+
+  printf("\nParse Tree:\n");
+  printTable(tree);
 
   return 0;
 }

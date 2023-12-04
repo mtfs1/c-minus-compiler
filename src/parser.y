@@ -12,6 +12,7 @@ int line_num = 0;
 int char_num = 0;
 size_t val = 0;
 node *last = NULL;
+node *tree;
 
 %}
 
@@ -47,7 +48,7 @@ node *last = NULL;
 
 %%
 
-program: decl-list            { $$ = $1; }
+program: decl-list            { $$ = $1; tree = $1;}
 
 decl-list: decl-list decl     { $$ = app($1, $2); }
            | decl             { $$ = $1; }
@@ -69,9 +70,11 @@ fun-decl: type-spec id '(' params ')' cmp-decl
   { $$ = new_quat_node(N_FNDCL, $1, $2, $4, $6); }
 
 params: param-list            { $$ = get(N_PAR); $$->c = $1; }
-        | VOID                { $$ = get(N_PAR); } ; param-list: param-list ',' param      { $$ = app($1, $3); }
-            | param                   { $$ = $1; }
-            ;
+        | VOID                { $$ = get(N_PAR); } ; 
+
+param-list: param-list ',' param      { $$ = app($1, $3); }
+    | param                   { $$ = $1; }
+    ;
 
 param: type-spec id           { $$ = get(N_DCL); bin_op($1, $$, $2); }
        | type-spec id '[' ']' { $$ = get(N_ADCL); bin_op($1, $$, $2); }
@@ -227,10 +230,11 @@ int yylex() {
   return tok.type + 256;
 }
 
-int parser(struct Buffer *buffer_arg, struct StringTable *string_table_arg) {
+node* parser(struct Buffer *buffer_arg, struct StringTable *string_table_arg) {
   buffer = buffer_arg;
   string_table = string_table_arg;
   yyparse();
+  return tree;
 }
 
 int yyerror(const char *s) {
