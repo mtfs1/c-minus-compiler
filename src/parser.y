@@ -167,9 +167,9 @@ arg-list: arg-list ',' expr   { $$ = app($1, $3); }
           | expr              { $$ = $1; }
           ;
 
-id: IDENTIFIER                { $$ = get(N_ID); $$->val = val; }
+id: IDENTIFIER                { $$ = $1; $$->type = N_ID; $$->val = val; }
 
-num: NUMBER                   { $$ = get(N_NUM); $$->val = val; }
+num: NUMBER                   { $$ = $1; $$->type = N_NUM; $$->val = val; }
 
 %%
 
@@ -179,6 +179,10 @@ int yylex() {
   if(tok.type == 0) {
     return YYEOF;
   }
+
+  yylval = get(0);
+  yylval->line_num = tok.line_number;
+  yylval->char_num = tok.char_number;
 
   line_num = tok.line_number;
   char_num = tok.char_number;
@@ -236,7 +240,6 @@ int yylex() {
       struct Scope *n = get_scope_node(scope_stack[scope_sp],
         scope_stack[scope_sp + 1], line_num, char_num);
 
-      yylval = get(0);
       yylval->val = (size_t)n;
 
       return '}';
@@ -255,6 +258,6 @@ node *parser(struct Buffer *buffer_arg, struct StringTable *string_table_arg) {
 
 int yyerror(const char *s) {
   fprintf(stderr, "Error: %s # LINHA: %d CHAR: %d\n", s, line_num, char_num);
-  return 0;
+  exit(1);
 }
 

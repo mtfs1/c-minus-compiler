@@ -1,6 +1,7 @@
 #include <stdlib.h>
 
 #include "buffered_read.h"
+#include "string_table.h"
 
 
 #ifndef PARSER
@@ -11,6 +12,8 @@ typedef struct ASTNode {
   size_t val;
   struct ASTNode *s;
   struct ASTNode *c;
+  int line_num;
+  int char_num;
 } node;
 
 typedef struct Scope {
