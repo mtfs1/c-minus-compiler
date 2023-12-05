@@ -8,7 +8,7 @@
 
 
 int char_to_index(char ch) {
-  if(ch >= 'A' && ch <= 'z')
+  if((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z'))
     return 0;
 
   if(ch >= '0' && ch <= '9')
