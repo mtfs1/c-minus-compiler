@@ -27,6 +27,7 @@ int main(int argc, char **argv) {
   struct ASTNode *ast = parser(&file_buffer, string_table);
 
   struct SymbolTable *symbol_table = new_symbol_table();
+  semantic_analisys(ast, symbol_table, NULL, 0);
 
   return 0;
 }
