@@ -1,6 +1,9 @@
+#include <stdlib.h>
+
 #include "parser.h"
 #include "string_table.h"
-#include <stdlib.h>
+#include "vector_position.h"
+#include "vector_params.h"
 
 
 #define S_TYPE_VARIABLE 1
@@ -16,7 +19,8 @@ struct SymbolTableNode {
   struct Scope *scope;
   int type;
   int vtype;
-  void *val;
+  size_t val;
+  struct VectorPos vector_position;
   struct SymbolTableNode *next;
 };
 
@@ -27,7 +31,10 @@ struct SymbolTable {
 
 struct SymbolTable *new_symbol_table();
 struct SymbolTableNode *insert_symbol(struct SymbolTable *symbol_table,
-  char *name, struct Scope *scope, int type, int vtype, void *val);
+  char *name, struct Scope *scope, int type, int vtype, size_t val);
 struct SymbolTableNode *get_entry(struct SymbolTable *symbol_table,
   char *name, int line, int ch);
+
+void semantic_analisys(struct ASTNode *node, struct SymbolTable *symbol_table,
+  struct Scope *scope, int identifier_validity);
 
