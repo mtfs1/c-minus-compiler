@@ -1,5 +1,6 @@
 #include "parser.h"
 #include "semantic.h"
+#include <stdio.h>
 #include <stdlib.h>
 
 
@@ -180,22 +181,27 @@ void printSymbolTable(struct SymbolTable *symbol_table){
 
           printf("%-13s",ptr->name);
           if(ptr->scope){
-            printf("S:%d/%d E:%d/%-8d", ptr->scope->start_line,ptr->scope->start_char,ptr->scope->end_line,ptr->scope->end_char);
+            printf("S:%-2d/%-2d E:%-2d/%-6d",
+               ptr->scope->start_line,
+               ptr->scope->start_char,
+               ptr->scope->end_line,
+               ptr->scope->end_char);
           } else {
-            printf("%-18c", '-');
+            printf("%-19c", '-');
           }
-          printf("%-10d %-12d", ptr->type, ptr->vtype);
+
+          printf("%-10d %-14d", ptr->type, ptr->vtype);
+
           if(ptr->type == 2){
-            for(j=0;j<ptr->vector_position.size;j++){
-              // printf("%d,",ptr->val->vec[j]);
-            }
-            printf("%-13d", (int)ptr->val);
-          } else {
-            printf("%-13d", (int)ptr->val);
-          }
-          for(j=0;j<ptr->vector_position.size;j++){
+            for(j = 0; j < ((struct VectorParams *)ptr->val)->size; j++)
+              printf("%-2d,",((struct VectorParams *)ptr->val)->vec[j]);
+            for(j = 4 - j; j > 0; j--)
+              printf("   ");
+          } else
+            printf("%-12c", ' ');
+
+          for(j = 0; j < ptr->vector_position.size; j++)
             printf("%d,",ptr->vector_position.vec[j].line_num);
-          }
           printf("\n");
         }
         ptr = ptr->next;
