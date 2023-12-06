@@ -3,6 +3,7 @@
 #include "buffered_read.h"
 #include "string_table.h"
 
+#define INDENT_SIZE 2
 
 #ifndef PARSER
 #define PARSER

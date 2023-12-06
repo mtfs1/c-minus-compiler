@@ -6,6 +6,9 @@
 #include "parser.h"
 #include "semantic.h"
 
+void showAST(node *tree);
+void printSymbolTable(struct SymbolTable *symbol_table);
+
 
 int main(int argc, char **argv) {
   if(argc != 2) {
@@ -28,6 +31,12 @@ int main(int argc, char **argv) {
 
   struct SymbolTable *symbol_table = new_symbol_table();
   semantic_analisys(ast, symbol_table, NULL, 0);
+
+  printf("AST:\n");
+  showAST(ast);
+
+  printf("\nSymbol Table\n");
+  printSymbolTable(symbol_table);
 
   return 0;
 }
