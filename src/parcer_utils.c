@@ -168,16 +168,35 @@ void showAST(node *tree){
 
 
 void printSymbolTable(struct SymbolTable *symbol_table){
-  int i;
+  int i,j,sc;
   struct SymbolTableNode *ptr;
-  printf("----------------------------------------------\n");
-  printf("name      | type      | val       | scope\n");
+  printf("-----------------------------------------------------------------\n");
+  printf("name        | scope           | type     | datatype    | val       | num lines\n");
   for(i=0;i<BINS;i++){
     if(&symbol_table->hash_table[i] != NULL){
       ptr = &symbol_table->hash_table[i];
-      while(ptr){
-        if(!ptr->name){
-          printf("%-8d %-8d\n",ptr->type,(int)ptr->val);
+      while(ptr != NULL){
+        if(ptr->name){
+
+          printf("%-13s",ptr->name);
+          if(ptr->scope){
+            printf("S:%d/%d E:%d/%-8d", ptr->scope->start_line,ptr->scope->start_char,ptr->scope->end_line,ptr->scope->end_char);
+          } else {
+            printf("%-18c", '-');
+          }
+          printf("%-10d %-12d", ptr->type, ptr->vtype);
+          if(ptr->type == 2){
+            for(j=0;j<ptr->vector_position.size;j++){
+              // printf("%d,",ptr->val->vec[j]);
+            }
+            printf("%-13d", (int)ptr->val);
+          } else {
+            printf("%-13d", (int)ptr->val);
+          }
+          for(j=0;j<ptr->vector_position.size;j++){
+            printf("%d,",ptr->vector_position.vec[j].line_num);
+          }
+          printf("\n");
         }
         ptr = ptr->next;
       }
